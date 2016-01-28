@@ -1,0 +1,29 @@
+import unittest
+
+from bitcoin.core import x, lx, b2x, b2lx
+
+from hashmal_lib.core import Transaction
+
+from hashmal_plugins.coin_claimer import get_unsigned_outputs
+
+raw_tx_sighash_none = '01000000017f71104801ceb380b2267c5a4f8ae619de4b91c20ea01376045d03f8cce05658010000006b483045022100b7e2cee4d6d795e226dc96175e605b58ac60690413494052efa5d2ac5dec52c102205c9612298b3fa0eff9b4d812c8cfd2f8a235ee112e3e4f368339a4e9ef107963022102d22e0c46e17c1c415eade7ce8d5ea5d3d118c801a5553c71420e77042060acf7ffffffff01c09ee605000000001976a914f243c18ef3315b423b2ee33727e37b5fe318bf7c88ac00000000'
+
+raw_tx_sighash_all = '01000000015a8bbbf3da497f03f8f71d74e624e9c4e38a9d181ce55b822c4dcf2ecb359dd501000000910047304402200a156e3e5617cc1d795dfe0c02a5c7dab3941820f194eabd6107f81f25e0519102204d8c585635e03c9137b239893701dc280e25b162011e6474d0c9297d2650b469014751210208b5b58fd9bf58f1d71682887182e7abd428756264442eec230dd021c193f8d9210245af4f2b1ae21c9310a3211f8d5debb296175e20b3a14b173ff30428e03d502d52aeffffffff0162699800000000001976a9146ea6784cd33733e5d2e4f45fa8c248687ed549d288ac00000000'
+
+class ClaimerTest(unittest.TestCase):
+    def test_get_unsigned_outputs_with_sighash_none(self):
+        tx = Transaction.deserialize(x(raw_tx_sighash_none))
+        unsigned = get_unsigned_outputs(tx)
+        self.assertEqual([0], unsigned)
+
+    def test_get_unsigned_outputs_with_sighash_all(self):
+        tx = Transaction.deserialize(x(raw_tx_sighash_all))
+        unsigned = get_unsigned_outputs(tx)
+        self.assertEqual([], unsigned)
+
+    def test_get_unsigned_outputs_with_sighash_single_and_none(self):
+        # Two inputs: SIGHASH_SINGLE and SIGHASH_NONE
+        rawtx = '01000000027f71104801ceb380b2267c5a4f8ae619de4b91c20ea01376045d03f8cce05658010000006a47304402207ac4d4a61dcfd366de2815eeee613514d61013011ebb3bce495fe327d1fdd87c0220615099194fade423f2e5c7c6ce5d936cd60234f83375155f7a094bcba7641f1a032102d22e0c46e17c1c415eade7ce8d5ea5d3d118c801a5553c71420e77042060acf7ffffffff0000000000000000000000000000000000000000000000000000000000000000000000006b483045022100be36640aa006acc01e943b3b966d07978c87f0f3100e4d4c7779652af49754100220505ee957abd40c337d41c81fec53b52261b665352bf1ecbb82c773635dbc3912022102d22e0c46e17c1c415eade7ce8d5ea5d3d118c801a5553c71420e77042060acf7ffffffff02c09ee605000000001976a914f243c18ef3315b423b2ee33727e37b5fe318bf7c88ac00000000000000001976a914000000000000000000000000000000000000000088ac00000000'
+        tx = Transaction.deserialize(x(rawtx))
+        unsigned = get_unsigned_outputs(tx)
+        self.assertEqual([1], unsigned)

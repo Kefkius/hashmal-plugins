@@ -169,6 +169,7 @@ class Pycoin(BaseDock):
         self.key_edit = QLineEdit()
         self.key_edit.setFont(monospace_font)
         self.key_edit.textChanged.connect(self.evaluate_key_input)
+        self.handler.substitute_variables(self.key_edit)
         self.key_edit.setWhatsThis('Enter a base58-encoded extended key here. If you have a key stored in the Variables tool, you can enter the variable name preceded by "$", and the variable value will be substituted automatically.')
         self.invalid_key_label = QLabel('Invalid key.')
         self.invalid_key_label.setProperty('hasError', True)
@@ -234,9 +235,6 @@ class Pycoin(BaseDock):
             return self.invalid_key_label.setVisible(False)
         # Variable substitution.
         elif txt.startswith('$'):
-            var_value = self.handler.get_plugin('Variables').ui.get_key(txt[1:])
-            if var_value:
-                self.key_edit.setText(var_value)
             return
         try:
             key = BIP32Node.from_hwif(txt)

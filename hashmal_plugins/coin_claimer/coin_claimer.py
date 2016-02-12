@@ -59,7 +59,7 @@ class ClaimableModel(QAbstractTableModel):
     def set_tx(self, tx):
         self.beginResetModel()
         self.tx = tx
-        self.unsigned_outputs = get_unsigned_outputs(self.tx)
+        self.unsigned_outputs = get_unsigned_outputs(self.tx) if self.tx else []
         self.endResetModel()
 
     def clear(self):

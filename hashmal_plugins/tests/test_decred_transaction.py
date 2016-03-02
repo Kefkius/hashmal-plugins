@@ -1,11 +1,14 @@
 import unittest
+from collections import namedtuple
 
 from bitcoin.core import x, b2x
 
 from hashmal_lib.core import chainparams
 from hashmal_lib.core.transaction import Transaction
+from hashmal_lib import gui_utils
 
-from hashmal_plugins.decred_tools.hashmal_decred import DecredPreset
+from hashmal_plugins.decred_tools.hashmal_decred import (DecredPreset, dcr_header_fields, dcr_tx_fields,
+            dcr_prevout_fields, dcr_txin_fields, dcr_txout_fields)
 
 chainparams.add_preset(DecredPreset)
 
@@ -46,3 +49,52 @@ class TransactionTest(unittest.TestCase):
 
         self.assertEqual(b2x(raw_tx), b2x(tx.serialize()))
 
+LabelTest = namedtuple('LabelTest', ('attr', 'label'))
+
+class ViewLabelTest(unittest.TestCase):
+    def test_view_label_for_decred_block_headers(self):
+        labels = [
+            'Version',
+            'Prev Block Hash',
+            'Merkle Root Hash',
+            'Stake Root Hash',
+            'Vote Bits',
+            'Final State',
+            'Voters',
+            'Fresh Stake',
+            'Revocations',
+            'Pool Size',
+            'Bits',
+            'Stake Bits',
+            'Height',
+            'Size',
+            'Time',
+            'Nonce',
+            'Extra Data'
+        ]
+        test_items = [LabelTest(*i) for i in zip([field[0] for field in dcr_header_fields], labels)]
+        for test in test_items:
+            self.assertEqual(test.label, gui_utils.get_label_for_attr(test.attr))
+
+    def test_view_label_for_decred_txin_fields(self):
+        labels = [
+            'Prevout',
+            'Sequence',
+            'Value',
+            'Block Height',
+            'Block Index',
+            'Sig Script'
+        ]
+        test_items = [LabelTest(*i) for i in zip([field[0] for field in dcr_txin_fields], labels)]
+        for test in test_items:
+            self.assertEqual(test.label, gui_utils.get_label_for_attr(test.attr))
+
+    def test_view_label_for_decred_txout_fields(self):
+        labels = [
+            'Value',
+            'Version',
+            'Pub Key Script'
+        ]
+        test_items = [LabelTest(*i) for i in zip([field[0] for field in dcr_txout_fields], labels)]
+        for test in test_items:
+            self.assertEqual(test.label, gui_utils.get_label_for_attr(test.attr))

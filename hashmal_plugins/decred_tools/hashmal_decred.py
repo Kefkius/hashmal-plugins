@@ -19,6 +19,25 @@ for op in opcode.opcodeArray:
     if opcode.ParsedOpcode(op, b'').isDisabled():
         disabled_ops.append(op.value)
 
+dcr_header_fields = [
+    ('nVersion', b'<i', 4, 1),
+    ('hashPrevBlock', 'hash', 32, b'\x00'*32),
+    ('hashMerkleRoot', 'hash', 32, b'\x00'*32),
+    ('hashStakeRoot', 'hash', 32, b'\x00'*32),
+    ('VoteBits', b'<H', 2, 0),
+    ('FinalState', 'bytes', 6, b'\x00'*6),
+    ('voters', b'<H', 2, 0),
+    ('FreshStake', b'<B', 1, 0),
+    ('revocations', b'<B', 1, 0),
+    ('PoolSize', b'<I', 4, 0),
+    ('nBits', b'<I', 4, 0),
+    ('nStakeBits', b'<q', 8, 0),
+    ('nHeight', b'<I', 4, 0),
+    ('size', b'<I', 4, 0),
+    ('nTime', b'<I', 4, 0),
+    ('nNonce', b'<I', 4, 0),
+    ('ExtraData', 'bytes', 36, b'\x00'*36)
+]
 
 dcr_tx_fields = [
     ('nVersion', b'<i', 4, 1),
@@ -145,7 +164,8 @@ DecredPreset = chainparams.ParamsPreset(
         txin_fields = dcr_txin_fields,
         txout_fields = dcr_txout_fields,
         tx_fields = dcr_tx_fields,
-        tx_serializer = DecredTxSerializer
+        tx_serializer = DecredTxSerializer,
+        block_header_fields = dcr_header_fields
 )
 
 

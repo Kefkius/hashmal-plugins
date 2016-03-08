@@ -17,9 +17,5 @@ class CoinCodex(BasePluginUI):
     category = Category.Data
 
     @augmenter
-    def block_explorers(self, data):
-        known_explorers = data.get('known_explorers')
-        my_explorers = explorers.my_explorers
-
-        known_explorers.update(my_explorers)
-
+    def block_explorers(self, *args):
+        return explorers.my_explorers

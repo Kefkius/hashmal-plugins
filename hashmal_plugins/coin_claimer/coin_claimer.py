@@ -12,7 +12,7 @@ from hashmal_lib.gui_utils import monospace_font
 
 
 def make_plugin():
-    return Plugin(CoinClaimer)
+    return Plugin(CoinClaimer, category=Category.Tx)
 
 def get_unsigned_outputs(tx):
     # sighash types for each input
@@ -115,7 +115,6 @@ class ClaimableModel(QAbstractTableModel):
 class CoinClaimer(BaseDock):
     tool_name = 'Coin Claimer'
     description = 'Coin Claimer allows you to change unsigned outputs in transactions.'
-    category = Category.Tx
     is_large = True
 
     def init_data(self):

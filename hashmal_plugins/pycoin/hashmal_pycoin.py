@@ -12,7 +12,7 @@ from hashmal_lib.gui_utils import AmountEdit, floated_buttons, Separator, monosp
 
 
 def make_plugin():
-    return Plugin(Pycoin)
+    return Plugin(Pycoin, category=Category.Key)
 
 class ExtKeyItem(Item):
     name = 'Extended Key'
@@ -152,7 +152,6 @@ class Pycoin(BaseDock):
 
     tool_name = 'Pycoin'
     description = 'Pycoin interface.'
-    category = Category.Key
     is_large = True
 
     @augmenter

@@ -7,8 +7,7 @@ from hashmal_lib.plugins import BasePluginUI, Plugin, augmenter, Category
 import explorers
 
 def make_plugin():
-    p = Plugin(CoinCodex)
-    p.has_gui = False
+    p = Plugin(CoinCodex, category=Category.Data, has_gui=False)
     return p
 
 class CoinCodex(BasePluginUI):

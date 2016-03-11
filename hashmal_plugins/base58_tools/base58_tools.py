@@ -55,7 +55,7 @@ class Base58Tools(BaseDock):
     def encode_data(self):
         payload = str(self.payload_edit.toPlainText())
         if not payload:
-            self.status_message('No data was input.', error=True)
+            self.error('No data was input.')
 
         if is_hex(payload):
             payload = format_hex_string(payload, with_prefix=False).decode('hex')
@@ -64,16 +64,16 @@ class Base58Tools(BaseDock):
             msg = base58.encode(payload)
             self.encoded_edit.setPlainText(msg)
         except Exception as e:
-            self.status_message(str(e), error=True)
+            self.error(str(e))
 
     def decode_data(self):
         msg = str(self.encoded_edit.toPlainText())
         if not msg:
-            self.status_message('No data was input.', error=True)
+            self.error('No data was input.')
 
         try:
             payload = base58.decode(msg)
             self.payload_edit.setPlainText(payload.encode('hex'))
         except Exception as e:
-            self.status_message(str(e), error=True)
+            self.error(str(e))
 

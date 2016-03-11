@@ -1,4 +1,5 @@
 from bitcoin.core import x, lx, b2x, b2lx
+from bitcoin.core.script import SIGHASH_NONE
 from bitcoin.base58 import CBase58Data
 
 from PyQt4.QtGui import *
@@ -7,7 +8,8 @@ from PyQt4.QtCore import *
 from hashmal_lib.core import Script
 from hashmal_lib.core.transaction import Transaction, sighash_types, sighash_types_by_value
 from hashmal_lib.core.utils import is_hex
-from hashmal_lib.plugins.base import BaseDock, Plugin, Category
+from hashmal_lib.plugins.base import BaseDock, Plugin, Category, augmenter
+from hashmal_lib.plugins.item_types import ItemAction
 from hashmal_lib.gui_utils import monospace_font
 
 
@@ -18,9 +20,13 @@ def get_unsigned_outputs(tx):
     # sighash types for each input
     hash_types = []
     for i, txin in enumerate(tx.vin):
-        sig = Script(txin.scriptSig).get_human().split()[-2]
-        hash_type = int(sig[-2:], 16)
-        hash_types.append(hash_type)
+        try:
+            sig = Script(txin.scriptSig).get_human().split()[-2]
+        except IndexError:
+            hash_types.append(SIGHASH_NONE)
+        else:
+            hash_type = int(sig[-2:], 16)
+            hash_types.append(hash_type)
 
     # sighash type names
     hash_names = map(lambda i: sighash_types_by_value.get(i), hash_types)
@@ -117,6 +123,10 @@ class CoinClaimer(BaseDock):
     description = 'Coin Claimer allows you to change unsigned outputs in transactions.'
     is_large = True
 
+    @augmenter
+    def item_actions(self, *args):
+        return ItemAction(self.tool_name, 'Transaction', 'Claim unsigned outputs', self.claim_item)
+
     def init_data(self):
         self.tx = None
 
@@ -198,7 +208,7 @@ class CoinClaimer(BaseDock):
     def do_claim(self):
         """Replace unsigned outputs."""
         if not self.tx:
-            self.status_message('Invalid or nonexistent transaction.', True)
+            self.error('Invalid or nonexistent transaction.')
             return
         dest = str(self.destination_edit.text())
         hash160 = dest
@@ -212,13 +222,19 @@ class CoinClaimer(BaseDock):
                 hash160 = dest
 
         if not is_hex(hash160) and len(hash160.replace('0x', '')) == 40:
-            self.status_message('Could not parse destination: %s' % hash160, True)
+            self.error('Could not parse destination: %s' % hash160)
             return
 
         if not get_unsigned_outputs(self.tx):
-            self.status_message('There are no unsigned outputs.', True)
+            self.error('There are no unsigned outputs.')
             return
         new_tx = replace_outputs(self.tx, hash160)
 
         self.result_edit.setPlainText(b2x(new_tx.serialize()))
-        self.status_message('Successfully altered outputs: %s' % unsigned_outputs)
+        self.info('Successfully altered outputs: %s' % unsigned_outputs)
+
+    def claim_item(self, item):
+        self.needsFocus.emit()
+        self.raw_tx_edit.setPlainText(item.raw())
+        if str(self.destination_edit.text()):
+            self.claim_button.animateClick()

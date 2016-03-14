@@ -72,7 +72,7 @@ class ViewLabelTest(unittest.TestCase):
             'Nonce',
             'Extra Data'
         ]
-        test_items = [LabelTest(*i) for i in zip([field[0] for field in dcr_header_fields], labels)]
+        test_items = [LabelTest(*i) for i in zip([field.attr for field in dcr_header_fields], labels)]
         for test in test_items:
             self.assertEqual(test.label, gui_utils.get_label_for_attr(test.attr))
 
@@ -85,7 +85,7 @@ class ViewLabelTest(unittest.TestCase):
             'Block Index',
             'Sig Script'
         ]
-        test_items = [LabelTest(*i) for i in zip([field[0] for field in dcr_txin_fields], labels)]
+        test_items = [LabelTest(*i) for i in zip([field.attr for field in dcr_txin_fields], labels)]
         for test in test_items:
             self.assertEqual(test.label, gui_utils.get_label_for_attr(test.attr))
 
@@ -95,6 +95,6 @@ class ViewLabelTest(unittest.TestCase):
             'Version',
             'Pub Key Script'
         ]
-        test_items = [LabelTest(*i) for i in zip([field[0] for field in dcr_txout_fields], labels)]
+        test_items = [LabelTest(*i) for i in zip([field.attr for field in dcr_txout_fields], labels)]
         for test in test_items:
             self.assertEqual(test.label, gui_utils.get_label_for_attr(test.attr))

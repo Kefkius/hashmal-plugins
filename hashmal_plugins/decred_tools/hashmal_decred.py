@@ -6,6 +6,7 @@ from decred.core import transaction
 from hashmal_lib import plugins
 from hashmal_lib.plugins import BasePluginUI, Plugin, augmenter
 from hashmal_lib.core import chainparams
+from hashmal_lib.core.serialize import Field
 from hashmal_lib.core.transaction import TransactionSerializer, OutPoint, TxIn, TxOut
 
 from .core.stack import DecredEngine
@@ -20,54 +21,54 @@ for op in opcode.opcodeArray:
         disabled_ops.append(op.value)
 
 dcr_header_fields = [
-    ('nVersion', b'<i', 4, 1),
-    ('hashPrevBlock', 'hash', 32, b'\x00'*32),
-    ('hashMerkleRoot', 'hash', 32, b'\x00'*32),
-    ('hashStakeRoot', 'hash', 32, b'\x00'*32),
-    ('VoteBits', b'<H', 2, 0),
-    ('FinalState', 'bytes', 6, b'\x00'*6),
-    ('voters', b'<H', 2, 0),
-    ('FreshStake', b'<B', 1, 0),
-    ('revocations', b'<B', 1, 0),
-    ('PoolSize', b'<I', 4, 0),
-    ('nBits', b'<I', 4, 0),
-    ('nStakeBits', b'<q', 8, 0),
-    ('nHeight', b'<I', 4, 0),
-    ('size', b'<I', 4, 0),
-    ('nTime', b'<I', 4, 0),
-    ('nNonce', b'<I', 4, 0),
-    ('ExtraData', 'bytes', 36, b'\x00'*36)
+    Field('nVersion', b'<i', 4, 1),
+    Field('hashPrevBlock', 'hash', 32, b'\x00'*32),
+    Field('hashMerkleRoot', 'hash', 32, b'\x00'*32),
+    Field('hashStakeRoot', 'hash', 32, b'\x00'*32),
+    Field('VoteBits', b'<H', 2, 0),
+    Field('FinalState', 'bytes', 6, b'\x00'*6),
+    Field('voters', b'<H', 2, 0),
+    Field('FreshStake', b'<B', 1, 0),
+    Field('revocations', b'<B', 1, 0),
+    Field('PoolSize', b'<I', 4, 0),
+    Field('nBits', b'<I', 4, 0),
+    Field('nStakeBits', b'<q', 8, 0),
+    Field('nHeight', b'<I', 4, 0),
+    Field('size', b'<I', 4, 0),
+    Field('nTime', b'<I', 4, 0),
+    Field('nNonce', b'<I', 4, 0),
+    Field('ExtraData', 'bytes', 36, b'\x00'*36)
 ]
 
 dcr_tx_fields = [
-    ('nVersion', b'<i', 4, 1),
-    ('vin', 'inputs', None, None),
-    ('vout', 'outputs', None, None),
-    ('nLockTime', b'<I', 4, 0),
-    ('expiry', b'<I', 4, 0)
+    Field('nVersion', b'<i', 4, 1),
+    Field('vin', 'inputs', None, None),
+    Field('vout', 'outputs', None, None),
+    Field('nLockTime', b'<I', 4, 0),
+    Field('expiry', b'<I', 4, 0)
 ]
 
 dcr_prevout_fields = [
-    ('hash', 'hash', 32, b'\x00'*32),
-    ('n', b'<I', 4, 0xffffffff),
-    ('tree', b'<b', 1, 0)
+    Field('hash', 'hash', 32, b'\x00'*32),
+    Field('n', b'<I', 4, 0xffffffff),
+    Field('tree', b'<b', 1, 0)
 ]
 
 dcr_txin_fields = [
     # non witness
-    ('prevout', 'prevout', None, None),
-    ('nSequence', b'<I', 4, 0xffffffff),
+    Field('prevout', 'prevout', None, None),
+    Field('nSequence', b'<I', 4, 0xffffffff),
     # witness
-    ('value', b'<q', 8, 0),
-    ('block_height', b'<I', 4, 0),
-    ('block_index', b'<I', 4, 0),
-    ('scriptSig', 'script', None, None),
+    Field('value', b'<q', 8, 0),
+    Field('block_height', b'<I', 4, 0),
+    Field('block_index', b'<I', 4, 0),
+    Field('scriptSig', 'script', None, None),
 ]
 
 dcr_txout_fields = [
-    ('nValue', b'<q', 8, -1),
-    ('version', b'<H', 2, 0),
-    ('scriptPubKey', 'script', None, None)
+    Field('nValue', b'<q', 8, -1),
+    Field('version', b'<H', 2, 0),
+    Field('scriptPubKey', 'script', None, None)
 ]
 
 dcr_tx_help = dict(plugins.chainparams.btc_field_help)

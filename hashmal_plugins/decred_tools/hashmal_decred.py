@@ -6,7 +6,7 @@ from decred.core import transaction
 from hashmal_lib import plugins
 from hashmal_lib.plugins import BasePluginUI, Plugin, augmenter
 from hashmal_lib.core import chainparams
-from hashmal_lib.core.serialize import Field
+from hashmal_lib.core.serialize import *
 from hashmal_lib.core.transaction import TransactionSerializer, OutPoint, TxIn, TxOut
 
 from .core.stack import DecredEngine
@@ -59,14 +59,14 @@ dcr_txin_fields = [
     Field('prevout', 'prevout', None, None),
     Field('nSequence', b'<I', 4, 0xffffffff),
     # witness
-    Field('value', b'<q', 8, 0),
+    Field('value', b'<q', 8, 0, metadata=(FIELD_COIN,)),
     Field('block_height', b'<I', 4, 0),
     Field('block_index', b'<I', 4, 0),
     Field('scriptSig', 'script', None, None),
 ]
 
 dcr_txout_fields = [
-    Field('nValue', b'<q', 8, -1),
+    Field('nValue', b'<q', 8, -1, metadata=(FIELD_COIN,)),
     Field('version', b'<H', 2, 0),
     Field('scriptPubKey', 'script', None, None)
 ]

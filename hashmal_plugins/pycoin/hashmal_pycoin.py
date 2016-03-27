@@ -272,5 +272,6 @@ class Pycoin(BaseDock):
             self.subkey_widget.mapper.setCurrentIndex(0)
 
     def deserialize_item(self, item):
-        self.key_edit.setText(str(item))
+        s = item.value.wallet_key(item.value.is_private())
+        self.key_edit.setText(s)
         self.needsFocus.emit()

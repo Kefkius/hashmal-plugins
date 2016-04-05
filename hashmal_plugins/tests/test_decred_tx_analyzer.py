@@ -15,16 +15,22 @@ app = QApplication(sys.argv)
 chainparams.set_to_preset('Bitcoin')
 
 class TxAnalyzerTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.gui = HashmalMain(app)
+        cls.gui.testing_mode = True
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.gui.close()
+
     def setUp(self):
-        self.gui = HashmalMain(app)
         self.ui = self.gui.plugin_handler.get_plugin('Transaction Analyzer').ui
         self.params_changer = self.gui.settings_dialog.params_combo
         self._set_chainparams('Bitcoin')
 
     def _set_chainparams(self, name):
-        chainparams.set_to_preset(name)
-        self.gui.config.set_option('chainparams', name, do_save=False)
-        self.params_changer.paramsChanged.emit()
+        self.gui.settings_dialog.params_combo.set_chainparams(name)
 
     def test_input_view_headers(self):
         model = self.ui.tx_widget.inputs_tree.model
